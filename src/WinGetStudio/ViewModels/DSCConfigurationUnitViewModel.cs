@@ -159,7 +159,7 @@ public partial class DSCConfigurationUnitViewModel : ObservableObject
 
     private string GetTitle()
     {
-        return ModuleName == "" ? Type : $"{ModuleName}/{Type}";
+        return ModuleName == string.Empty ? Type : $"{ModuleName}/{Type}";
     }
 
     [RelayCommand]

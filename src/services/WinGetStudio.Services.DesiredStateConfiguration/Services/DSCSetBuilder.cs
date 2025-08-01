@@ -20,24 +20,28 @@ internal class DSCSetBuilder : IDSCSetBuilder
     private EditableDSCSet _dscSet = new();
     public IReadOnlyList<IDSCUnit> Units => _dscSet.Units;
 
-    public string FilePath { get; set; } = "";
+    public string TargetFilePath { get; set; } = string.Empty;
 
     public DSCSetBuilder(IDSCFactory dscFactory)
     {
-        _dscFactory = dscFactory ?? throw new ArgumentNullException(nameof(dscFactory));
+        _dscFactory = dscFactory;
     }
+
     public void AddUnit(EditableDSCUnit unit)
     {
         _dscSet.AddUnit(unit);
     }
+
     public async Task<IDSCSet> BuildAsync()
     {
         return await _dscFactory.CreateSetAsync(_dscSet);
     }
+
     public void ClearUnits()
     {
         _dscSet.InternalUnits.Clear();
     }
+
     public void RemoveUnit(EditableDSCUnit unit)
     {
         _dscSet.InternalUnits.Remove(unit);
@@ -123,7 +127,7 @@ internal class DSCSetBuilder : IDSCSetBuilder
         return yaml;
 
     }
-    public async Task<bool> EqualsYaml(string yaml)
+    public async Task<bool> EqualsYamlAsync(string yaml)
     {
         return await ConvertToYamlAsync() == yaml;
     }

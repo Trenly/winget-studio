@@ -50,7 +50,7 @@ public sealed partial class ConfigurationSettings : UserControl
         l ??= Properties;
         if (l != null)
         {
-            l.Add(new("", new StringValue("")));
+            l.Add(new(string.Empty, new StringValue(string.Empty)));
         }
     }
     private void NewValidationProperty(object sender, RoutedEventArgs e)
@@ -70,19 +70,19 @@ public sealed partial class ConfigurationSettings : UserControl
             switch (tag)
             {
                 case "Str":
-                    l.Add(new("", new StringValue("")));
+                    l.Add(new(string.Empty, new StringValue(string.Empty)));
                     break;
                 case "Num":
-                    l.Add(new("", new NumberValue(0)));
+                    l.Add(new(string.Empty, new NumberValue(0)));
                     break;
                 case "Bool":
-                    l.Add(new("", new BooleanValue(false)));
+                    l.Add(new(string.Empty, new BooleanValue(false)));
                     break;
                 case "Arr":
-                    l.Add(new("", new ArrayValue(new ObservableCollection<ConfigurationPropertyValueBase>())));
+                    l.Add(new(string.Empty, new ArrayValue(new ObservableCollection<ConfigurationPropertyValueBase>())));
                     break;
                 case "Obj":
-                    l.Add(new("", new ObjectValue(new ObservableCollection<ConfigurationProperty>())));
+                    l.Add(new(string.Empty, new ObjectValue(new ObservableCollection<ConfigurationProperty>())));
                     break;
             }
         }
@@ -134,7 +134,7 @@ public sealed partial class ConfigurationSettings : UserControl
                         }
                         else
                         {
-                            newValue = new StringValue("");
+                            newValue = new StringValue(string.Empty);
                         }
                             break;
                     case "Bool":

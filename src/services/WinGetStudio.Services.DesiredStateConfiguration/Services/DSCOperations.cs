@@ -22,8 +22,6 @@ namespace WinGetStudio.Services.DesiredStateConfiguration.Services;
 internal sealed class DSCOperations : IDSCOperations
 {
     private readonly ILogger _logger;
-    private const string PowerShellHandlerIdentifier = "pwsh";
-    private const string DSCV3HandlerIdentifier = "{dbb2ac6d-1b58-4b05-9c50-b463cc434771}";
     private const string DSCv3DynamicRuntimeHandlerIdentifier = "{5f83e564-ca26-41ca-89db-36f5f0517ffd}";
 
     public DSCOperations(ILogger<DSCOperations> logger)
@@ -131,6 +129,8 @@ internal sealed class DSCOperations : IDSCOperations
     }
 
     /// <inheritdoc />
+    /// Currently broken due to bug in DSC
+    /// https://github.com/PowerShell/DSC/issues/786
     public async Task ExportUnit(ConfigurationUnitModel unit)
     {
         ConfigurationStaticFunctions config = new();
@@ -224,7 +224,7 @@ internal sealed class DSCOperations : IDSCOperations
         InMemoryRandomAccessStream result = new();
         using (DataWriter writer = new(result))
         {
-            writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+            writer.UnicodeEncoding = UnicodeEncoding.Utf8;
             writer.WriteString(str);
             await writer.StoreAsync();
             writer.DetachStream();

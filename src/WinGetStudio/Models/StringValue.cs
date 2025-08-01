@@ -11,7 +11,7 @@ using Windows.Graphics.Display;
 namespace WinGetStudio.Models;
 public class StringValue : ConfigurationPropertyValueBase
 {
-    private string _value = "";
+    private string _value = string.Empty;
     public override object Value
     {
         get => _value;

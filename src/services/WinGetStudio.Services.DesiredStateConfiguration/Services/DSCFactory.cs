@@ -3,24 +3,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinGetStudio.Services.DesiredStateConfiguration.Contracts;
 using WinGetStudio.Services.DesiredStateConfiguration.Models;
 using Microsoft.Management.Configuration;
 using Windows.Foundation.Collections;
-using Windows.Services.Maps;
 
 namespace WinGetStudio.Services.DesiredStateConfiguration.Services;
 internal class DSCFactory : IDSCFactory
 {
-    private readonly IDSCOperations _dscOperations;
     private ConfigurationProcessor _configurationProcessor;
-    private const string PowerShellHandlerIdentifier = "pwsh";
-    private TaskCompletionSource<bool> _processorReady = new();
     private const string DSCv3DynamicRuntimeHandlerIdentifier = "{5f83e564-ca26-41ca-89db-36f5f0517ffd}";
+
+    public DSCFactory()
+    {
+        _configurationProcessor = null;
+    }
 
     public async Task<IDSCSet> CreateSetAsync(EditableDSCSet set)
     {
@@ -39,7 +37,6 @@ internal class DSCFactory : IDSCFactory
             dscSet.ConfigSet.Units.Add((u as DSCUnit).ConfigUnit);
         }
         return dscSet;
-
     }
 
     public IDSCUnit CreateUnit(IDSCUnit unit)
@@ -63,11 +60,11 @@ internal class DSCFactory : IDSCFactory
             {
                 configUnit.Metadata.Add(metadata.Key, metadata.Value);
             }
-            if (editableUnit.ModuleName != "")
+            if (editableUnit.ModuleName != string.Empty)
             {
                 configUnit.Metadata["module"] = editableUnit.ModuleName;
             }
-            if (editableUnit.Description != "")
+            if (editableUnit.Description != string.Empty)
             {
                 configUnit.Metadata["description"] = editableUnit.Description;
             }
@@ -105,12 +102,6 @@ internal class DSCFactory : IDSCFactory
             }
         }
     }
-    public DSCFactory(IDSCOperations dscOperations)
-    {
-        _dscOperations = dscOperations;
-        _configurationProcessor = null;
-    }
-
 
     private async Task CreateProcessorAsync()
     {
@@ -121,6 +112,5 @@ internal class DSCFactory : IDSCFactory
         _configurationProcessor = config.CreateConfigurationProcessor(factory);
         _configurationProcessor.Caller = nameof(WinGetStudio);
         _configurationProcessor.MinimumLevel = DiagnosticLevel.Verbose;
-        _processorReady.SetResult(true);
     }
 }

@@ -17,7 +17,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace WinGetStudio.Models;
 public class ConfigurationUnitModel
 {
-    public string Type { get; set; } = "";
+    public string Type { get; set; } = string.Empty;
     public ValueSet Settings { get; set; } = new();
     public bool ElevatedRequired { get; set; } = false;
 

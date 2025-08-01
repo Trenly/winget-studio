@@ -18,14 +18,14 @@ public partial class ValidationViewModel : ObservableRecipient, INavigationAware
 
 
     [ObservableProperty]
-    public partial string ModuleName { get; set; } = "";
+    public partial string ModuleName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string Type { get; set; } = "";
+    public partial string Type { get; set; } = string.Empty;
 
 
     [ObservableProperty]
-    public partial string Title { get; set; } = "";
+    public partial string Title { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsV3 { get; set; } = false;
@@ -34,7 +34,7 @@ public partial class ValidationViewModel : ObservableRecipient, INavigationAware
     public partial bool ShowRawData { get; set; } = false;
 
     [ObservableProperty]
-    public partial string RawData { get; set; } = "";
+    public partial string RawData { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string TabHeader { get; set; } = "New Tab";
@@ -49,7 +49,7 @@ public partial class ValidationViewModel : ObservableRecipient, INavigationAware
     public partial bool TestResult { get; set; } = false;
 
     [ObservableProperty]
-    public partial string TestBannerText { get; set; } = "";
+    public partial string TestBannerText { get; set; } = string.Empty;
 
     public bool IsPropertiesEmpty => Properties.Count == 0;
     public ObservableCollection<ConfigurationProperty> Properties { get; } = new();
@@ -70,7 +70,7 @@ public partial class ValidationViewModel : ObservableRecipient, INavigationAware
         {
             ModuleName = u.ModuleName;
             Type = u.Type;
-            Title = ModuleName == "" ? Type : $"{ModuleName}/{Type}";
+            Title = ModuleName == string.Empty ? Type : $"{ModuleName}/{Type}";
 
             foreach (var kvp in u.Settings)
             {

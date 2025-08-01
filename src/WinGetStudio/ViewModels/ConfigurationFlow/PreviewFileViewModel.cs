@@ -33,7 +33,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
     private IDSCSet _dscSet;
     private readonly IStringResource _stringResource;
     private readonly ILogger<PreviewFileViewModel> _logger;
-    public string Yaml = "";
+    public string Yaml = string.Empty;
 
     public ObservableCollection<DSCConfigurationUnitViewModel> ConfigurationUnits = new();
 
@@ -44,7 +44,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
     public partial bool LoadingUnits { get; set; } = true;
 
     [ObservableProperty]
-    public partial string FilePath { get; set; } = "";
+    public partial string FilePath { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsInEditMode { get; set; }
@@ -147,7 +147,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
         {
             _ = UpdateUnits();
         }
-        FilePath = _dscSetBuilder.FilePath;
+        FilePath = _dscSetBuilder.TargetFilePath;
     }
 
     public void OnNavigatedFrom()
@@ -162,7 +162,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
         FilePath = path;
         _dscSetBuilder.ImportSet(dscSet);
         _dscSet = dscSet;
-        _dscSetBuilder.FilePath = path;
+        _dscSetBuilder.TargetFilePath = path;
 
         _ = UpdateUnits();
     }
@@ -198,7 +198,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
     {
         await UpdateUnits();
         var yaml = await _dscSetBuilder.ConvertToYamlAsync();
-        if (FilePath == "")
+        if (FilePath == string.Empty)
         {
             await SaveAsCommand.ExecuteAsync(null);
         }
@@ -229,7 +229,7 @@ public partial class PreviewFileViewModel : ObservableRecipient, INavigationAwar
         StorageFile file = await picker.PickSaveFileAsync();
         if (file != null)
         {
-            _dscSetBuilder.FilePath = file.Path;
+            _dscSetBuilder.TargetFilePath = file.Path;
             FilePath = file.Path;
             await FileIO.WriteTextAsync(file, yaml);
         }

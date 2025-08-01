@@ -47,7 +47,7 @@ internal sealed class DSCUnit : IDSCUnit
     /// <inheritdoc/>
     public IList<KeyValuePair<string, string>> Metadata { get; }
 
-    public ConfigurationUnit ConfigUnit { get; }
+    internal ConfigurationUnit ConfigUnit { get; }
 
     public DSCUnit(ConfigurationUnit unit)
     {

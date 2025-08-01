@@ -24,10 +24,16 @@ public interface IDSC
 
     /// <inheritdoc cref="IDSCOperations.GetConfigurationUnitDetails" />
     public void GetConfigurationUnitDetails(IDSCSet set);
+
     /// <inheritdoc cref="IDSCOperations.Get" />
     public Task Get(ConfigurationUnitModel unit);
+
     /// <inheritdoc cref="IDSCOperations.Set"/>
     public Task Set(ConfigurationUnitModel unit);
+
+    /// <inheritdoc cref="IDSCOperations.Test"/>
     public Task Test(ConfigurationUnitModel unit);
+
+    /// <inheritdoc cref="IDSCOperations.Export"/>
     public Task Export(ConfigurationUnitModel unit);
 }
