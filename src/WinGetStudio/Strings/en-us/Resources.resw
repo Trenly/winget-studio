@@ -806,6 +806,12 @@
   <data name="ApplyFile_BackButton.Content" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="ApplyFile_CancelButton.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ApplyFile_ApplyOperationCanceledMessage" xml:space="preserve">
+    <value>Apply operation canceled</value>
+  </data>
   <data name="PreviewFile_ResourceAutoSuggestBox.Header" xml:space="preserve">
     <value>Resource type</value>
   </data>
@@ -823,6 +829,15 @@
   </data>
   <data name="MonacoEditor_OpenUriDialog.Title" xml:space="preserve">
     <value>Do you want WinGet Studio to open the external application?</value>
+  </data>
+  <data name="ApplyFile_CancelDialog.CloseButtonText" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ApplyFile_CancelDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="ApplyFile_CancelDialog.Title" xml:space="preserve">
+    <value>Are you sure you want to cancel applying the configuration?</value>
   </data>
   <data name="ExploreResource_Failed" xml:space="preserve">
     <value>Failed to load resource details</value>

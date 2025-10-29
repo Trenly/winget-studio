@@ -126,6 +126,7 @@ public partial class App : Application
 
                 // Factories
                 services.AddTransient<ValidationViewModelFactory>(sp => () => ActivatorUtilities.CreateInstance<ValidationViewModel>(sp));
+                services.AddTransient<ApplySetViewModelFactory>(sp => applySet => ActivatorUtilities.CreateInstance<ApplySetViewModel>(sp, applySet));
                 services.AddTransient<ResourceExplorerViewModelFactory>(sp => resource => ActivatorUtilities.CreateInstance<ResourceExplorerViewModel>(sp, resource));
             })
             .Build();
