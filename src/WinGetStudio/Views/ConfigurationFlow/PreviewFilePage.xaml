@@ -445,6 +445,11 @@
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
+
+                                <!-- Empty state when no units -->
+                                <localControls:EmptyStateControl Glyph="&#xE74C;"
+                                                                 Visibility="{x:Bind ViewModel.HasNoUnits, Mode=OneWay}"
+                                                                 x:Uid="PreviewFile_NoResourcesMessage"/>
                             </Grid>
 
                             <!-- Code view -->
