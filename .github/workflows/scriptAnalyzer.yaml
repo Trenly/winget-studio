@@ -35,6 +35,8 @@ jobs:
           if ($results.where({$_.Severity -eq 'Error'})) {
             Write-Host "Found script issues (errors)."
             exit 1  # Exit with a non-zero status to fail the job
-          } else {
+          } elseif ($results) {
             Write-Host "No blocking detections."
+          } else {
+            Write-Host "No issues found."
           }
