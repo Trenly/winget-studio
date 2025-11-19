@@ -12,7 +12,7 @@ Param(
 $StartTime = Get-Date
 
 if ($Help) {
-    Write-Host @"
+    Write-Information @"
 Copyright (c) Microsoft Corporation and Contributors.
 Licensed under the MIT License.
 
@@ -36,8 +36,23 @@ Options:
 
   -Help
       Display this usage message.
-"@
+"@ -InformationAction Continue
     Exit
+}
+
+function Write-InformationColored {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Message,
+
+        [Parameter(Mandatory=$false)]
+        [ConsoleColor]$ForegroundColor = "White" # Default color
+    )
+
+    $originalForegroundColor = $host.UI.RawUI.ForegroundColor
+    $host.UI.RawUI.ForegroundColor = $ForegroundColor
+    Write-Information $Message -InformationAction Continue
+    $host.UI.RawUI.ForegroundColor = $originalForegroundColor
 }
 
 $env:Build_RootDirectory = (Split-Path $MyInvocation.MyCommand.Path)
@@ -132,7 +147,7 @@ Try {
             $appxmanifest.Root.Element($xIdentity).Attribute("Name").Value = $devPackageName
             $appxmanifest.Root.Element($xProperties).Element($xDisplayName).Value = $devPackageDisplayName
             $appxmanifest.Root.Element($xApplications).Element($xApplication).Element($uapVisualElements).Attribute("DisplayName").Value = $devAppDisplayNameResource
-            $appxmanifest.Save($appxmanifestPath) 
+            $appxmanifest.Save($appxmanifestPath)
         }
     }
 
@@ -150,7 +165,7 @@ Try {
 Catch {
     $formatString = "`n{0}`n`n{1}`n`n"
     $fields = $_, $_.ScriptStackTrace
-    Write-Host ($formatString -f $fields) -ForegroundColor RED
+    Write-InformationColored -Message ($formatString -f $fields) -ForegroundColor RED
     Exit 1
 }
 
@@ -159,21 +174,21 @@ $TotalMinutes = [math]::Floor($TotalTime.TotalMinutes)
 $TotalSeconds = [math]::Ceiling($TotalTime.TotalSeconds) - ($totalMinutes * 60)
 
 if (-not($isAdmin)) {
-    Write-Host @"
+    Write-InformationColored -Message @"
 
 WARNING: Cert signing requires admin privileges.  To sign, run the following in an elevated Developer Command Prompt.
 "@ -ForegroundColor GREEN
     foreach ($platform in $env:Build_Platform.Split(",")) {
         foreach ($configuration in $env:Build_Configuration.Split(",")) {
             $appxPackageFile = (Join-Path $OutputDir "AppxPackages\$configuration\WinGetStudio-$platform.msix")
-            Write-Host @"
+            Write-InformationColored -Message @"
 powershell -command "& { . build\scripts\CertSignAndInstall.ps1; Invoke-SignPackage $appxPackageFile }"
 "@ -ForegroundColor GREEN
         }
     }
 }
 
-Write-Host @"
+Write-InformationColored -Message @"
 
 Total Running Time:
 $TotalMinutes minutes and $TotalSeconds seconds
