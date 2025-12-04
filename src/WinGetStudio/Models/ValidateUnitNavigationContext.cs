@@ -11,12 +11,27 @@ namespace WinGetStudio.Models;
 public sealed partial class ValidateUnitNavigationContext
 {
     /// <summary>
+    /// Gets the set that contains the source unit.
+    /// </summary>
+    public SetViewModel? SourceSet { get; }
+
+    /// <summary>
+    /// Gets the source unit.
+    /// </summary>
+    public UnitViewModel? SourceUnit { get; }
+
+    /// <summary>
     /// Gets the unit to validate.
     /// </summary>
     public UnitViewModel UnitToValidate { get; }
 
-    public ValidateUnitNavigationContext(UnitViewModel unitToValidate)
+    public ValidateUnitNavigationContext(
+        UnitViewModel unitToValidate,
+        UnitViewModel? sourceUnit = null,
+        SetViewModel? sourceSet = null)
     {
         UnitToValidate = unitToValidate;
+        SourceUnit = sourceUnit;
+        SourceSet = sourceSet;
     }
 }

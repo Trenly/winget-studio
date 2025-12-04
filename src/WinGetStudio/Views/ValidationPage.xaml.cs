@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using WinGetStudio.Contracts.Views;
@@ -20,12 +19,30 @@ public sealed partial class ValidationPage : Page, IView<ValidationViewModel>
     }
 
     /// <summary>
-    /// Copies the raw data results to the clipboard.
+    /// Copies the yaml output results to the clipboard.
     /// </summary>
-    private void CopyResultsToClipboard()
+    private void CopyYamlResultsToClipboard()
     {
         var dataPackage = new DataPackage();
-        dataPackage.SetText(ViewModel.ValidateUnit?.OutputText);
+        dataPackage.SetText(ViewModel.SelectedUnit?.YamlOutput);
         Clipboard.SetContent(dataPackage);
+    }
+
+    /// <summary>
+    /// Copies the error output results to the clipboard.
+    /// </summary>
+    private void CopyErrorResultsToClipboard()
+    {
+        var dataPackage = new DataPackage();
+        dataPackage.SetText(ViewModel.SelectedUnit?.ErrorOutput);
+        Clipboard.SetContent(dataPackage);
+    }
+
+    private void UnitValidation_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+    {
+        if (args.Item is ValidateUnitViewModel unitViewModel)
+        {
+            ViewModel.RemoveUnitValidation(unitViewModel);
+        }
     }
 }

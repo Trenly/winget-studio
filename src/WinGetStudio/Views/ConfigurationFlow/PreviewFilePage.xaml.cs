@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.ComponentModel;
 using System.Text.Json;
 using CommunityToolkit.WinUI;
 using Microsoft.Extensions.Localization;
@@ -31,7 +30,6 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
         _localizer = App.GetService<IStringLocalizer<PreviewFilePage>>();
         _ui = App.GetService<IUIFeedbackService>();
         ViewModel = App.GetService<PreviewFileViewModel>();
-        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         InitializeComponent();
     }
 
@@ -57,6 +55,11 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
 
     private async void OpenConfigurationFile(object sender, RoutedEventArgs e)
     {
+        if (ViewModel.PreviewSet == null)
+        {
+            return;
+        }
+
         try
         {
             var filePicker = new WindowOpenFileDialog();
@@ -65,7 +68,7 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
             var selectedFile = await filePicker.ShowAsync(App.MainWindow);
             if (selectedFile != null)
             {
-                await ViewModel.OpenConfigurationFileAsync(selectedFile);
+                await ViewModel.PreviewSet.OpenConfigurationFileAsync(selectedFile);
             }
         }
         catch (Exception ex)
@@ -76,6 +79,11 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
 
     private async void SaveConfigurationFileAs(object sender, RoutedEventArgs e)
     {
+        if (ViewModel.PreviewSet == null)
+        {
+            return;
+        }
+
         try
         {
             var filePicker = new WindowSaveFileDialog();
@@ -83,7 +91,7 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
             var selectedFile = filePicker.Show(App.MainWindow);
             if (!string.IsNullOrEmpty(selectedFile))
             {
-                await ViewModel.SaveConfigurationAsAsync(selectedFile);
+                await ViewModel.PreviewSet.SaveConfigurationAsAsync(selectedFile);
             }
         }
         catch (Exception ex)
@@ -94,30 +102,35 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
 
     private void SelectedUnitDependencyChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (ViewModel.PreviewSet == null)
+        {
+            return;
+        }
+
         foreach (var id in e.AddedItems.OfType<UnitViewModel>())
         {
-            ViewModel.SelectedUnit?.Item2.Dependencies?.Add(id);
+            ViewModel.PreviewSet.SelectedUnit?.Item2.Dependencies?.Add(id);
         }
 
         foreach (var id in e.RemovedItems.OfType<UnitViewModel>())
         {
-            ViewModel.SelectedUnit?.Item2.Dependencies?.Remove(id);
+            ViewModel.PreviewSet.SelectedUnit?.Item2.Dependencies?.Remove(id);
         }
     }
 
     private void SelectedUnitDependencyLoaded(object sender, RoutedEventArgs e)
     {
-        if (sender is ListView listView && ViewModel.SelectedUnit != null)
+        if (sender is ListView listView && ViewModel.PreviewSet?.SelectedUnit != null)
         {
             // Disable the option that matches the currently selected unit
             foreach (var item in listView.Items.OfType<UnitViewModel>())
             {
                 var container = listView.ContainerFromItem(item) as ListViewItem;
-                container?.IsEnabled = item != ViewModel.SelectedUnit.Item1;
+                container?.IsEnabled = item != ViewModel.PreviewSet.SelectedUnit.Item1;
             }
 
             // Get the set of IDs to select
-            var idsToSelect = ViewModel.SelectedUnit.Item2.Dependencies?.ToHashSet();
+            var idsToSelect = ViewModel.PreviewSet.SelectedUnit.Item2.Dependencies?.ToHashSet();
             if (idsToSelect == null || idsToSelect.Count == 0)
             {
                 listView.SelectedItems.Clear();
@@ -143,7 +156,7 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
 
     private async void MonacoEditor_CodeLensCommandInvoked(object sender, IReadOnlyList<MonacoEditor.MonacoCommandArgument> args)
     {
-        if (args == null || args.Count == 0)
+        if (args == null || args.Count == 0 || ViewModel.PreviewSet == null)
         {
             return;
         }
@@ -157,34 +170,18 @@ public sealed partial class PreviewFilePage : Page, IView<PreviewFileViewModel>
                 if (id == WinGetFileCodeLensHelper.EditResourceCommandId && value != null)
                 {
                     var index = value.Value.GetInt32();
-                    await ViewModel.OnEditUnitByIndexAsync(index);
+                    await ViewModel.PreviewSet.OnEditUnitByIndexAsync(index);
                 }
                 else if (arg?.Id == WinGetFileCodeLensHelper.ValidateUnitCommandId && value != null)
                 {
                     var index = value.Value.GetInt32();
-                    await ViewModel.OnValidateUnitByIndexAsync(index);
+                    await ViewModel.PreviewSet.OnValidateUnitByIndexAsync(index);
                 }
             }
             catch
             {
                 // No-op
             }
-        }
-    }
-
-    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ViewModel.Code))
-        {
-            var code = ViewModel.Code;
-            if (!string.IsNullOrWhiteSpace(code) && WinGetFileCodeLensHelper.TryGenerateCodeLenses(_localizer, code, out var codeLenses))
-            {
-                ConfigurationEditor.CodeLenses = codeLenses;
-            }
-        }
-        else if (e.PropertyName == nameof(ViewModel.IsCodeDirty))
-        {
-            ConfigurationEditor.IsCodeLensEnabled = !ViewModel.IsCodeDirty;
         }
     }
 }
